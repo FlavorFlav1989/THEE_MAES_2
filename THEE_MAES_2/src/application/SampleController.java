@@ -1,11 +1,9 @@
 package application;
 
-import java.awt.Toolkit;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
 
 import javafx.animation.Animation;
 import javafx.animation.Animation.Status;
@@ -18,10 +16,8 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Orientation;
-import javafx.scene.Node;
 import javafx.scene.chart.Axis;
 import javafx.scene.chart.BarChart;
-import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
@@ -29,10 +25,8 @@ import javafx.scene.chart.XYChart.Data;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Line;
 import javafx.util.Duration;
@@ -243,10 +237,8 @@ public class SampleController {
 				tracer_line(proc_Poiss.getElemPointe(index_tot), 0);
 				series1_expo.getData().add(new XYChart.Data(index_tot, proc_Poiss.moyenne()));
 				series1_poiss.getData().add(new XYChart.Data(index_tot, proc_Poiss.lambda_reel()));
-				System.out.println("Serie1 " + series1_expo.getData().toString());
 				//lc_moy.getData().get(0).getData().add(new XYChart.Data(index_tot, proc_Poiss.moyenne()));
 				//lc_moy.getData().set(0, series1);
-				System.out.println("Moyenne : " + proc_Poiss.moyenne());
 				moyenne_th.setText(""+proc_Poiss.moyenne());
 				moyenne_poiss_th.setText(""+proc_Poiss.lambda_reel());
 				
@@ -290,18 +282,21 @@ public class SampleController {
 		lc_poiss.getData().clear();
 	}
 		
+	@SuppressWarnings("unused")
 	private void display_popup(String text){
 		alert.setTitle("Attention");
 	    alert.setHeaderText(text);
 	    alert.showAndWait(); 
 	}
 	
+	@SuppressWarnings("rawtypes")
 	private class LineChartWithMarkers<X,Y> extends LineChart {
 
         private ObservableList<Data<X, Y>> horizontalMarkers;
         private ObservableList<Data<X, Y>> verticalMarkers;
 
-        public LineChartWithMarkers(Axis<X> xAxis, Axis<Y> yAxis) {
+        @SuppressWarnings("unchecked")
+		public LineChartWithMarkers(Axis<X> xAxis, Axis<Y> yAxis) {
             super(xAxis, yAxis);
             horizontalMarkers = FXCollections.observableArrayList(data -> new Observable[] {data.YValueProperty()});
             horizontalMarkers.addListener((InvalidationListener)observable -> layoutPlotChildren());
@@ -313,6 +308,7 @@ public class SampleController {
             Objects.requireNonNull(marker, "the marker must not be null");
             if (horizontalMarkers.contains(marker)) return;
             Line line = new Line();
+            setColor(line);
             marker.setNode(line );
             getPlotChildren().add(line);
             horizontalMarkers.add(marker);
@@ -331,6 +327,7 @@ public class SampleController {
             Objects.requireNonNull(marker, "the marker must not be null");
             if (verticalMarkers.contains(marker)) return;
             Line line = new Line();
+            setColor(line);
             marker.setNode(line );
             getPlotChildren().add(line);
             verticalMarkers.add(marker);
@@ -351,7 +348,7 @@ public class SampleController {
             super.layoutPlotChildren();
             for (Data<X, Y> horizontalMarker : horizontalMarkers) {
                 Line line = (Line) horizontalMarker.getNode();
-                line.setStartX(0);
+                setColor(line);
                 line.setEndX(getBoundsInLocal().getWidth());
                 line.setStartY(getYAxis().getDisplayPosition(horizontalMarker.getYValue()) + 0.5); // 0.5 for crispness
                 line.setEndY(line.getStartY());
@@ -359,6 +356,7 @@ public class SampleController {
             }
             for (Data<X, Y> verticalMarker : verticalMarkers) {
                 Line line = (Line) verticalMarker.getNode();
+                setColor(line);
                 line.setStartX(getXAxis().getDisplayPosition(verticalMarker.getXValue()) + 0.5);  // 0.5 for crispness
                 line.setEndX(line.getStartX());
                 line.setStartY(0d);
@@ -368,6 +366,18 @@ public class SampleController {
         }
     }
 	
+	
+	public void setColor(Line line) {
+		 // create random object - reuse this as often as possible
+        Random random = new Random();
+
+        // create a big random number - maximum is ffffff (hex) = 16777215 (dez)
+        int nextInt = random.nextInt(0xffffff + 1);
+
+        // format it as hexadecimal string (with hashtag and leading zeros)
+        String color = String.format("#%06x", nextInt);
+		line.setStyle("-fx-stroke:"+ color);
+	}
 	
 	public void avance_chart(){
 		if(proc_Poiss.max_time() > (int)xLineAxis.getUpperBound()){

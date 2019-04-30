@@ -25,7 +25,6 @@ public class ProcessusPoisson {
 	 */
 	public int calculer_nombre_occurence(double time){
 		int nb_gener = (int)Poisson.next_random(lambda*time);
-		System.out.println("Poisson généré : " + nb_gener);
 		return nb_gener;
 	}
 	
