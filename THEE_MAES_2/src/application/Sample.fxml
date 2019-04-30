@@ -1,7 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
-	
+
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.BorderPane?>
-	
-<BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.SampleController">
-	<!-- TODO Add Nodes -->
+
+<BorderPane prefHeight="600.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="application.SampleController">
+  <!-- TODO Add Nodes -->
+  <center>
+    <VBox fx:id="vb_princ" prefHeight="200.0" prefWidth="100.0">
+      <children>
+        <VBox prefHeight="200.0" prefWidth="100.0">
+          <children>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+              <children>
+                <Label text="Nombre valeurs">
+                  <HBox.margin>
+                    <Insets right="5.0" fx:id="x1" />
+                  </HBox.margin>
+                </Label>
+                <TextField fx:id="nb_valeur" prefWidth="200.0" HBox.margin="$x1" />
+                <Label text="Lambda" HBox.margin="$x1" />
+                <TextField id="nb_valeur" fx:id="lambda" prefWidth="200.0" HBox.margin="$x1" />
+                <Button id="test_button" mnemonicParsing="false" onAction="#test" text="Lancer">
+                  <HBox.margin>
+                    <Insets right="5.0" fx:id="x1" />
+                  </HBox.margin>
+                </Button>
+                <Button fx:id="pause_btn" mnemonicParsing="false" onAction="#pause" text="Pause" />
+              </children>
+            </HBox>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+              <children>
+                <Label text="Moyenne Expo réel :">
+                  <HBox.margin>
+                    <Insets right="5.0" fx:id="x1" />
+                  </HBox.margin>
+                </Label>
+                <TextField id="nb_valeur" fx:id="moyenne_th" disable="true" editable="false" opacity="0.85" prefWidth="80.0" HBox.margin="$x1" />
+                <Label text="Moyenne poisson réel" HBox.margin="$x1" />
+                <TextField id="nb_valeur" fx:id="moyenne_poiss_th" disable="true" editable="false" opacity="0.85" prefWidth="80.0" HBox.margin="$x1" />
+              </children>
+            </HBox>
+          </children>
+        </VBox>
+      </children>
+    </VBox>
+  </center>
 </BorderPane>
