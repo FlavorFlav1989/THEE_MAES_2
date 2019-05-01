@@ -138,9 +138,11 @@ public class Generatrice {
         		}
         	}
         }
-        val_max = echantillon[nb_value-1];
-        val_min = echantillon[0];
-        interval = (val_max + Math.abs(val_min)) / nb_class;
+        if(nb_value != 0){
+        	 val_max = echantillon[nb_value-1];
+             val_min = echantillon[0];
+             interval = (val_max + Math.abs(val_min)) / nb_class;
+        }
     }
 
     public void affiche_echantilon(){
