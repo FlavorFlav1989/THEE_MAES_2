@@ -11,23 +11,22 @@ public class ProcessusPoisson {
 	
 	List<Double> list_ecart = new ArrayList<Double>();
 	List<Double> list_pointe = new ArrayList<Double>();
-	
 	int max_time;
 	
 	public ProcessusPoisson(int lambda){
 		this.lambda = lambda;
 	}
 	
-	/**
-	 * Calculer le nombre d'évènements dans un intervalle de temps
-	 * @param time le top de départ de l'intervalle
-	 * @return le nombre d'occurences de l'intervalle de temps
-	 */
-	public int calculer_nombre_occurence(double time){
-		int nb_gener = (int)Poisson.next_random(lambda*time);
-		return nb_gener;
+	public double ki2(){
+		double[] arr = new double[this.list_ecart.size()];
+		List<Double> list = this.list_ecart;
+		//Collections.sort(list);
+		for(int i = 0; i < list.size(); i++){
+			arr[i] = list.get(i);
+		}
+		Generatrice gen = new Generatrice(10, TypeDistribution.EXPONENTIELLE, arr, lambda);
+		return gen.test_ki2();
 	}
-	
 	/**
 	 * Calculer le temps séparant deux évenemens
 	 * @return le temps calculé
@@ -61,23 +60,10 @@ public class ProcessusPoisson {
 		}
 		return index;
 	}
-	public List<List<Double>> get_list_compl(){
-		return this.espacement_evnt;
-	}
 	
-	public List<Double> get_list_t(int t){
-		return this.espacement_evnt.get(t-1);
-	}
+	
 	public void affiche_evnt(){
 		System.out.println("List espacement : " + espacement_evnt.toString());
-	}
-	
-	public List<Integer> getListPoisson(){
-		return list_poisson;
-	}
-	
-	public List<Double> getListTime(int i){
-		return evnt_time.get(i);
 	}
 	
 	public double getElemEcart(int index){
@@ -90,6 +76,10 @@ public class ProcessusPoisson {
 	
 	public List<Double> getListElemPointe(){
 		return list_pointe;
+	}
+	
+	public List<Double> getListElemEcart(){
+		return list_ecart;
 	}
 
 	public void affiche_ecart(){

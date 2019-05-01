@@ -1,5 +1,6 @@
 package application;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
@@ -30,7 +31,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Line;
 import javafx.util.Duration;
+import model.Generatrice;
 import model.ProcessusPoisson;
+import model.TypeDistribution;
 
 public class SampleController {
 	Alert alert = new Alert(AlertType.WARNING);
@@ -54,6 +57,9 @@ public class SampleController {
 	@FXML
 	TextField lambda;
 
+	@FXML
+	TextField ki2;
+	
 	@FXML
 	BarChart<String, Number> bc;
 	
@@ -230,11 +236,13 @@ public class SampleController {
 	public void calculer(){
 			if(index_tot == nb_valeur_glob){
 				timeline.stop();
+				ki2.setText(""+proc_Poiss.ki2());
 			}
 			else{
 				
 				//clear_chart();				
 				proc_Poiss.ajout_elem();
+				ki2.setText(""+proc_Poiss.ki2());
 				avance_chart();
 				tracer_line(proc_Poiss.getElemPointe(index_tot), 0);
 				series1_expo.getData().add(new XYChart.Data(index_tot, proc_Poiss.moyenne()));

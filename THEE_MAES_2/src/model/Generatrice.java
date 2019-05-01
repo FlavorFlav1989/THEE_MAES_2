@@ -21,6 +21,18 @@ public class Generatrice {
         this.nb_class = nb_class;
         this.distrib = distrib;
     }
+    
+    public Generatrice(int nb_class, TypeDistribution distrib, double[] echantillon, int param){
+        this.echantillon = echantillon;
+        this.param1 = param;
+        this.rep_th = new double[nb_class];
+        this.classes = new double[nb_class][echantillon.length];
+        this.nb_value = echantillon.length;
+        this.nb_class = nb_class;
+        this.distrib = distrib;
+        tri();
+        repartir_class();
+    }
 
     public double[] getDistribution(Double alpha, Double beta){
     	switch(distrib){
@@ -70,14 +82,13 @@ public class Generatrice {
 
     public double[][] repartir_class(){
     	int k = 0;
-    	affiche_echantilon();
         for(int i = 1; i <= nb_class; i++){
         	/*Borne supérieur de la classe*/
         	double max_class = val_min + (i * ((val_max + Math.abs(val_min))/(double)nb_class));
         	
         	/*Borne inféireur de la classe*/
         	double min_class = (i == 1 ? val_min : (val_min + ((i-1) * ((val_max + Math.abs(val_min))/(double)nb_class))));
-        	System.out.println("MAX_CLASSS " + max_class + " MIN_CLASS " + min_class);
+        	
         	switch(distrib){
         	case UNIFORME :	rep_th[i-1] = nb_value/nb_class;
         					break; 
