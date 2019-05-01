@@ -49,6 +49,12 @@ public class SampleController {
 	TextField nb_valeur;
 	
 	@FXML
+	TextField moyenne_reel;
+	
+	@FXML
+	TextField moyenne_poiss_reel;
+	
+	@FXML
 	TextField moyenne_th;
 	
 	@FXML
@@ -197,7 +203,8 @@ public class SampleController {
 			this.lambda.setText("5");
 			lambda_glob = 5;
 		}
-		
+		moyenne_th.setText("" + (1.0/((double)this.lambda_glob)));
+		moyenne_poiss_th.setText("" + (this.lambda_glob));
 		
 		timeline = new Timeline(new KeyFrame(
 		        Duration.millis(50),
@@ -249,8 +256,8 @@ public class SampleController {
 				series1_poiss.getData().add(new XYChart.Data(index_tot, proc_Poiss.lambda_reel()));
 				//lc_moy.getData().get(0).getData().add(new XYChart.Data(index_tot, proc_Poiss.moyenne()));
 				//lc_moy.getData().set(0, series1);
-				moyenne_th.setText(""+proc_Poiss.moyenne());
-				moyenne_poiss_th.setText(""+proc_Poiss.lambda_reel());
+				moyenne_reel.setText(""+proc_Poiss.moyenne());
+				moyenne_poiss_reel.setText(""+proc_Poiss.lambda_reel());
 				
 				index_tot++;				
 			}

@@ -16,14 +16,14 @@
           <children>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
               <children>
-                <Label text="Nombre valeurs">
+                <Label text="Nombre valeurs :">
                   <HBox.margin>
                     <Insets right="5.0" fx:id="x1" />
                   </HBox.margin>
                 </Label>
-                <TextField fx:id="nb_valeur" prefWidth="200.0" HBox.margin="$x1" />
-                <Label text="Lambda" HBox.margin="$x1" />
-                <TextField id="nb_valeur" fx:id="lambda" prefWidth="200.0" HBox.margin="$x1" />
+                <TextField fx:id="nb_valeur" prefWidth="80.0" HBox.margin="$x1" />
+                <Label text="Lambda :" HBox.margin="$x1" />
+                <TextField id="nb_valeur" fx:id="lambda" prefWidth="80.0" HBox.margin="$x1" />
                 <Button id="test_button" mnemonicParsing="false" onAction="#test" text="Lancer">
                   <HBox.margin>
                     <Insets right="5.0" fx:id="x1" />
@@ -31,30 +31,52 @@
                 </Button>
                 <Button fx:id="pause_btn" mnemonicParsing="false" onAction="#pause" text="Pause" />
               </children>
+              <VBox.margin>
+                <Insets bottom="10.0" top="10.0" />
+              </VBox.margin>
             </HBox>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+              <children>
+                <Label text="Moyenne Expo théorique :">
+                  <HBox.margin>
+                    <Insets right="5.0" fx:id="x1" />
+                  </HBox.margin>
+                </Label>
+                <TextField id="nb_valeur" fx:id="moyenne_th" disable="true" editable="false" opacity="0.85" prefWidth="80.0" HBox.margin="$x1" />
+                <Label text="Moyenne poisson théorique :" HBox.margin="$x1" />
+                <TextField id="nb_valeur" fx:id="moyenne_poiss_th" disable="true" editable="false" opacity="0.85" prefWidth="80.0" HBox.margin="$x1" />
+              </children>
+              <VBox.margin>
+                <Insets bottom="10.0" fx:id="x2" />
+              </VBox.margin>
+            </HBox>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" VBox.margin="$x2">
               <children>
                 <Label text="Moyenne Expo réel :">
                   <HBox.margin>
                     <Insets right="5.0" fx:id="x1" />
                   </HBox.margin>
                 </Label>
-                <TextField id="nb_valeur" fx:id="moyenne_th" disable="true" editable="false" opacity="0.85" prefWidth="80.0">
+                <TextField id="nb_valeur" fx:id="moyenne_reel" disable="true" editable="false" opacity="0.85" prefWidth="80.0">
                   <HBox.margin>
                     <Insets right="5.0" fx:id="x1" />
                   </HBox.margin>
                 </TextField>
-                <Label text="Moyenne poisson réel">
+                <Label text="Moyenne poisson réel :">
                   <HBox.margin>
                     <Insets right="5.0" fx:id="x1" />
                   </HBox.margin>
                 </Label>
-                <TextField id="nb_valeur" fx:id="moyenne_poiss_th" disable="true" editable="false" opacity="0.85" prefWidth="80.0">
+                <TextField id="nb_valeur" fx:id="moyenne_poiss_reel" disable="true" editable="false" opacity="0.85" prefWidth="80.0">
                   <HBox.margin>
                     <Insets right="5.0" fx:id="x1" />
                   </HBox.margin>
                 </TextField>
-                <Label text="Ki2 Exponentielle" />
+              </children>
+            </HBox>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+              <children>
+                <Label text="Ki2 Exponentielle :" />
                 <TextField id="nb_valeur" fx:id="ki2" disable="true" editable="false" opacity="0.85" prefWidth="80.0" />
               </children>
             </HBox>
