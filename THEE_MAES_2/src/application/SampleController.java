@@ -106,6 +106,8 @@ public class SampleController {
 		vb_princ.getChildren().add(lc_poiss);
 	    lc_moy.setCreateSymbols(false);
 	    lc_poiss.setCreateSymbols(false);
+	    lc_moy.setTitle("Evolution de la moyenne suivant la loi exponentielle");
+	    lc_poiss.setTitle("Evolution de la moyenne suivant la loi de poisson");
 	    //yLineAxis.setTickUnit(0.1);
 	}
 	 
@@ -138,7 +140,7 @@ public class SampleController {
 		yLineAxis.setLowerBound(0);
 		yLineAxis.setUpperBound(1);
 		lc = new LineChartWithMarkers<Number, Number>(xLineAxis, yLineAxis);
-		
+		lc.setTitle("Processus de poisson");
 		xLineAxis.setLabel("Temps");
 		yLineAxis.setLabel("Etat");
 		
