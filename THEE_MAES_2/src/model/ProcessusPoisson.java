@@ -17,7 +17,7 @@ public class ProcessusPoisson {
 		this.lambda = lambda;
 	}
 	
-	public double ki2(){
+	public Ki2Classes ki2(){
 		double[] arr = new double[this.list_ecart.size()];
 		List<Double> list = this.list_ecart;
 		//Collections.sort(list);
@@ -25,7 +25,7 @@ public class ProcessusPoisson {
 			arr[i] = list.get(i);
 		}
 		Generatrice gen = new Generatrice(10, TypeDistribution.EXPONENTIELLE, arr, lambda);
-		return gen.test_ki2();
+		return gen.getObjectKi2();
 	}
 	/**
 	 * Calculer le temps séparant deux évenemens
@@ -117,7 +117,7 @@ public class ProcessusPoisson {
 	public double lambda_reel(){
 		int res = 0;
 		int max = this.max_time;
-		for(int i = 1; i < max; i++){
+		for(int i = 0; i < max; i++){
 			res += compte_in_max(i);
 		}
 		return ((double)res /(double) max);

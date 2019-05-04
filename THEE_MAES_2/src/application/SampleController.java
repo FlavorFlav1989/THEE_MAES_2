@@ -2,6 +2,7 @@ package application;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -20,6 +21,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Orientation;
+import javafx.scene.Scene;
 import javafx.scene.chart.Axis;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.LineChart;
@@ -29,11 +31,15 @@ import javafx.scene.chart.XYChart.Data;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Line;
+import javafx.stage.Stage;
 import javafx.util.Duration;
+import model.Ki2Classes;
 import model.ProcessusPoisson;
 import model.TimerPerso;
 
@@ -97,6 +103,8 @@ public class SampleController {
 	@FXML
 	LineChartWithMarkers<Number, Number> lc;
 	
+	Button ki2_button;
+	
 	Timer timer;
 	
 	@FXML
@@ -117,9 +125,28 @@ public class SampleController {
 	
 	Set<Data<Number, Number>> series1_expo_tmp;
 	Set<Data<Number, Number>> series1_poiss_tmp;
+	Label[][] ki2_tab;
+	GridPane grid = new GridPane();
+	Stage stage;
+	
+	Ki2Classes ki2_classes;
+	
+	public void click_ki2(){
+		stage.show();
+		
+	}
+	
+	public void init_ki2(){
+		stage = new Stage();
+		stage.setWidth(1000);
+		stage.setHeight(300);
+		stage.setScene(new Scene(grid));
+		
+	}
 	
 	@FXML
 	public void initialize(){
+		init_ki2();
 		pause_btn.setDisable(true);
 		initialize_chart_lc();
 		vb_princ.getChildren().add(lc_moy);
@@ -178,10 +205,11 @@ public class SampleController {
 	}
 		
 	@FXML
-	public void test() throws InterruptedException{
+	public void test() throws InterruptedException, NoSuchMethodException, SecurityException{
 		clear_chart();
 		initialize_chart_lc();
 		pause_btn.setText("Pause");
+		ki2.setText("");
 		index_tot = 0;
 		
 		if(this.nb_valeur.getText() != null && !this.nb_valeur.getText().equals("")){
@@ -216,7 +244,7 @@ public class SampleController {
 		
 		timeline = new Timeline(new KeyFrame(
 		        Duration.millis(100),
-		        ae -> calculer()));
+		        ae -> actu_tracer()));
 		
 		timeline.setCycleCount(Animation.INDEFINITE);
 		
@@ -248,12 +276,23 @@ public class SampleController {
 		
 		lc_poiss.getData().add(series1_poiss);
 		lc_poiss.getData().add(series2_poiss);
-		timer_perso = new TimerPerso(100, proc_Poiss, series1_expo_tmp, series1_poiss_tmp);
+		timer_perso = new TimerPerso(1000/this.lambda_glob, new java.util.concurrent.Callable<Integer>(){public Integer call(){return calculer();}});
 		timer_perso.start();
 		timeline.play();
 		
 	}
 	
+	public Integer calculer(){
+		proc_Poiss.ajout_elem();
+		try{
+			series1_expo_tmp.add(new XYChart.Data(proc_Poiss.getListElemEcart().size()-1, proc_Poiss.moyenne()));
+			series1_poiss_tmp.add(new XYChart.Data(proc_Poiss.getListElemEcart().size()-1, proc_Poiss.lambda_reel()));
+		}
+		catch(ConcurrentModificationException e){
+			return 0;
+		}
+		return 1;
+	}
 	   public void unionArrays(List<Data<Number, Number>> arrays_1, List<Data<Number, Number>> arrays_2)
 	    {
 		   boolean is_present = false;
@@ -272,7 +311,48 @@ public class SampleController {
 	        }
 	    }
 	    
-	public void calculer(){	
+	public void remplir_tab(){
+		for(int i = 0; i < ki2_tab.length; i++){
+			for(int j = 0; j < ki2_tab[i].length; j++){
+				if(j == 0){
+					if(i == 0)
+						ki2_tab[i][j].setText("Classes ");
+					else if(i == 1)
+						ki2_tab[i][j].setText("Bornes ");
+					else if(i == 1)
+						ki2_tab[i][j].setText("Valeurs réel ");
+					else if(i == 2)
+						ki2_tab[i][j].setText("Valeurs théorique ");
+					else if(i == 3)
+						ki2_tab[i][j].setText("ki2 ");
+				}
+				else{
+					if(i == 0)
+						ki2_tab[i][j].setText("" + (j-1));
+					else if(i == 1)
+						ki2_tab[i][j].setText("[" + String.format("%.2f",ki2_classes.getBorne_inf().get(j-1)) + "; " + String.format("%.2f", ki2_classes.getBorne_supp().get(j-1)) + "]");
+					else if(i == 2)
+						ki2_tab[i][j].setText("" + ki2_classes.getValeurs_reel().get(j-1));
+					else if(i == 3)
+						ki2_tab[i][j].setText("" + String.format("%.2f", ki2_classes.getValeurs_th().get(j-1)));
+					else if(i == 4)
+						ki2_tab[i][j].setText("" + String.format("%.2f", ki2_classes.getKi2_vals().get(j-1)));
+				}
+			}
+		} 
+	}
+	
+	public void creer_grid_label(){
+		for(int i = 0; i < ki2_tab.length; i++){
+			for(int j = 0; j < ki2_tab[i].length; j++){
+				ki2_tab[i][j] = new Label();
+				GridPane.setRowIndex(ki2_tab[i][j], i);
+				GridPane.setColumnIndex(ki2_tab[i][j], j);
+				grid.getChildren().add(ki2_tab[i][j]);
+			}
+		}
+	}
+	public void actu_tracer(){	
 		//series1_expo = new XYChart.Series<Number, Number>();
 		List<Data<Number, Number>> list = new ArrayList<Data<Number, Number>>(series1_expo_tmp);
 		unionArrays(series1_expo.getData(), list);
@@ -283,24 +363,43 @@ public class SampleController {
 			if(index_tot == nb_valeur_glob){
 				timeline.stop();
 				timer_perso.arreter_timer();
-				ki2.setText(""+proc_Poiss.ki2());
+				ki2_classes = proc_Poiss.ki2();
+				ki2_tab = new Label[5][ki2_classes.getTaille()+1];
+				creer_grid_label();
+				remplir_tab();
+				ki2.setText(""+proc_Poiss.ki2().ki2());
 			}
 			else{
 				index_tot = proc_Poiss.getListElemEcart().size();	
-				//clear_chart();				
-				//proc_Poiss.ajout_elem();
-				ki2.setText(""+proc_Poiss.ki2());
 				avance_chart();
 				//tracer_line(proc_Poiss.getElemPointe(index_tot), 0);
 				tracer_lines();
-				//series1_expo.getData().add(new XYChart.Data(index_tot, proc_Poiss.moyenne()));
-				//series1_poiss.getData().add(new XYChart.Data(index_tot, proc_Poiss.lambda_reel()));
+				moyenne_reel.setText(""+proc_Poiss.moyenne());
+				moyenne_poiss_reel.setText(""+proc_Poiss.lambda_reel());		
+			}
+	}
+	
+	public void actu_tracer2(){	
+		if(index_tot == nb_valeur_glob){
+				timeline.stop();
+				ki2.setText(""+proc_Poiss.ki2().ki2());
+			}
+			else{
+				
+				//clear_chart();				
+				proc_Poiss.ajout_elem();
+				ki2.setText(""+proc_Poiss.ki2().ki2());
+				avance_chart();
+				//tracer_line(proc_Poiss.getElemPointe(index_tot), 0);
+				tracer_lines();
+				series1_expo.getData().add(new XYChart.Data(index_tot, proc_Poiss.moyenne()));
+				series1_poiss.getData().add(new XYChart.Data(index_tot, proc_Poiss.lambda_reel()));
 				//lc_moy.getData().get(0).getData().add(new XYChart.Data(index_tot, proc_Poiss.moyenne()));
 				//lc_moy.getData().set(0, series1);
 				moyenne_reel.setText(""+proc_Poiss.moyenne());
 				moyenne_poiss_reel.setText(""+proc_Poiss.lambda_reel());
 				
-				//index_tot++;				
+				index_tot++;				
 			}
 	}
 	

@@ -4,6 +4,10 @@ public class Generatrice {
     private double echantillon[];
     private double classes[][];
     private double rep_th[];
+    private Double borne_inf[];
+    private Double borne_supp[];
+    private Double ki2_classes_reel[];
+    private Double ki2_classes_th[];
     private int nb_value;
     private int nb_class;
     private TypeDistribution distrib;
@@ -14,9 +18,13 @@ public class Generatrice {
     private double interval;
     
     public Generatrice(int n, int nb_class, TypeDistribution distrib){
-        echantillon = new double[n];
-        rep_th = new double[nb_class];
-        classes = new double[nb_class][n];
+        this.echantillon = new double[n];
+        this.rep_th = new double[nb_class];
+        this.borne_inf = new Double[nb_class];
+        this.borne_supp = new Double[nb_class];
+        this.ki2_classes_reel = new Double[nb_class];
+        this.ki2_classes_th = new Double[nb_class];
+        this.classes = new double[nb_class][n];
         nb_value = n;
         this.nb_class = nb_class;
         this.distrib = distrib;
@@ -25,6 +33,10 @@ public class Generatrice {
     public Generatrice(int nb_class, TypeDistribution distrib, double[] echantillon, int param){
         this.echantillon = echantillon;
         this.param1 = param;
+        this.borne_inf = new Double[nb_class];
+        this.borne_supp = new Double[nb_class];
+        this.ki2_classes_reel = new Double[nb_class];
+        this.ki2_classes_th = new Double[nb_class];
         this.rep_th = new double[nb_class];
         this.classes = new double[nb_class][echantillon.length];
         this.nb_value = echantillon.length;
@@ -88,7 +100,8 @@ public class Generatrice {
         	
         	/*Borne inféireur de la classe*/
         	double min_class = (i == 1 ? val_min : (val_min + ((i-1) * ((val_max + Math.abs(val_min))/(double)nb_class))));
-        	
+        	borne_inf[i-1] = min_class;
+        	borne_supp[i-1] = max_class;
         	switch(distrib){
         	case UNIFORME :	rep_th[i-1] = nb_value/nb_class;
         					break; 
@@ -161,6 +174,13 @@ public class Generatrice {
         	}
     	}
     }
+    
+    public void affiche_classes_2(){
+    	for(int i = 0; i < nb_class; i++){
+    		System.out.println("Class : " + i + " Borne inf : " + borne_inf[i] + " Borne supp : " + borne_supp[i] + " Valeur : " + ki2_classes_reel[i] + " Theorique" + ki2_classes_th[i]);
+    	}
+
+    }
 
     public double moyenne(){
     	switch(distrib){
@@ -194,13 +214,33 @@ public class Generatrice {
     	double q = 0;
     	for(int i = 0; i < nb_class; i++){
     		classes_reel = compte_valeur(classes[i]);
+    		ki2_classes_reel[i] = Double.valueOf(classes_reel);
     		classes_theorique = rep_th[i];
-    		double classes_reel_conv = (double) classes_reel;
-    		double classes_theorique_conv = (double) classes_theorique;
-    		if(classes_reel_conv != 0.0)
-    			q += (((classes_reel_conv - classes_theorique_conv) * (classes_reel_conv - classes_theorique_conv)) / classes_theorique_conv);
+    		ki2_classes_th[i] = classes_theorique ;
+//    		double classes_reel_conv = (double) classes_reel;
+//    		double classes_theorique_conv = (double) classes_theorique;
+//    		if(classes_reel_conv != 0.0 && classes_reel >= 5)
+//    			q += (((classes_reel_conv - classes_theorique_conv) * (classes_reel_conv - classes_theorique_conv)) / classes_theorique_conv);
     	}
-    	return q;
+    	
+    	affiche_classes_2();
+    	Ki2Classes ki2 = new Ki2Classes(this.borne_inf, this.borne_supp, this.ki2_classes_reel, this.ki2_classes_th);
+    	ki2.affiche_classes();
+    	return ki2.ki2();
+    }
+    
+    public Ki2Classes getObjectKi2(){
+    	double classes_theorique;
+    	int classes_reel;
+    	double q = 0;
+    	for(int i = 0; i < nb_class; i++){
+    		classes_reel = compte_valeur(classes[i]);
+    		ki2_classes_reel[i] = Double.valueOf(classes_reel);
+    		classes_theorique = rep_th[i];
+    		ki2_classes_th[i] = classes_theorique ;
+    	}
+    	Ki2Classes ki2 = new Ki2Classes(this.borne_inf, this.borne_supp, this.ki2_classes_reel, this.ki2_classes_th);
+    	return ki2;
     }
     
     public int compte_valeur(double tab[]){
