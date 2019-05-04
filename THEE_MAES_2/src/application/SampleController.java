@@ -314,17 +314,20 @@ public class SampleController {
 	public void remplir_tab(){
 		for(int i = 0; i < ki2_tab.length; i++){
 			for(int j = 0; j < ki2_tab[i].length; j++){
-				if(j == 0){
+				if(j == 0)
+				{
+					ki2_tab[i][j].setStyle("-fx-font-weight: bold");
+					ki2_tab[i][j].setPrefWidth(125);
 					if(i == 0)
-						ki2_tab[i][j].setText("Classes ");
+						ki2_tab[i][j].setText(" Classes ");
 					else if(i == 1)
-						ki2_tab[i][j].setText("Bornes ");
-					else if(i == 1)
-						ki2_tab[i][j].setText("Valeurs réel ");
+						ki2_tab[i][j].setText(" Bornes ");
 					else if(i == 2)
-						ki2_tab[i][j].setText("Valeurs théorique ");
+						ki2_tab[i][j].setText(" Valeurs réels ");
 					else if(i == 3)
-						ki2_tab[i][j].setText("ki2 ");
+						ki2_tab[i][j].setText(" Valeurs théoriques ");
+					else if(i == 4)
+						ki2_tab[i][j].setText(" ki2 ");
 				}
 				else{
 					if(i == 0)
